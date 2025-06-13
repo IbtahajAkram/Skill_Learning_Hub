@@ -1,0 +1,80 @@
+// -------------------------------
+// GENERATOR & DATASOURCE
+// -------------------------------
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -------------------------------
+// ENUMS
+// -------------------------------
+enum Role {
+  ADMIN
+  INSTRUCTOR
+  STUDENT
+}
+
+// -------------------------------
+// MODELS
+// -------------------------------
+// model User {
+//   id       String @id @default(cuid())
+//   name     String
+//   email    String @unique
+//   password String
+//   role     Role   @default(STUDENT)
+
+//   courses Course[] @relation("InstructorCourses")
+
+//   // Courses *taken* by this user (if role = STUDENT)
+//   // enrollments Enrollment[] @relation("StudentEnrollments")
+
+//   // Timestamps
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now()) @updatedAt
+// }
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(STUDENT)
+  courses   Course[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Course {
+  id           String   @id @default(uuid())
+  title        String
+  description  String?
+  image        String?
+  instructor   User     @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  instructorId String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+}
+
+// enrollments Enrollment[] @relation("CourseEnrollments")
+
+model Enrollment {
+  id String @id @default(cuid())
+
+  // Relations
+
+  // student   User   @relation("StudentEnrollments", fields: [studentId], references: [id], onDelete: Cascade)
+  studentId String
+
+  // course   Course @relation("CourseEnrollments", fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
+
+  // Timestamps
+  createdAt DateTime @default(now())
+}
