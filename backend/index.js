@@ -23,7 +23,10 @@ app.use(express.json());
 app.use('/api/auth', authRouter);
 app.use('/api/courses', courseRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
-
+app.get('/', (req, res) => {
+  res.send('Welcome to the Course Management API');
+}
+);
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
 });
